@@ -1,0 +1,49 @@
+//---------------------------------------------------------------------------
+
+#include <vcl.h>
+#pragma hdrstop
+
+#include "Unit1.h"
+#include <string>
+//---------------------------------------------------------------------------
+#pragma package(smart_init)
+#pragma resource "*.dfm"
+TMainForm *MainForm;
+//---------------------------------------------------------------------------
+__fastcall TMainForm::TMainForm(TComponent* Owner)
+	: TForm(Owner)
+{
+    MainMemo->Text="";
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TMainForm::OpenFileButtonClick(TObject *Sender)
+{
+    AnsiString filename;
+    OpenDialog1->Execute();
+    filename=OpenDialog1->FileName;
+    if(filename == "" || filename == NULL) return;
+    MainMemo->Lines->LoadFromFile(filename);
+    std::string allLines = "";
+    for(int i=0;i<MainMemo->Lines->Count;i++) {
+        allLines = AnsiString(MainMemo->Lines->Strings[1]).c_str();
+        allLines += "QQQ\n";
+    }
+    allLines += "\0";
+    ShowMessage(IntToStr((int)allLines.length()));
+    MainMemo->Clear();
+    //regex commentPattern("[\/][\/].*|[\#].*|[\/][\*][^]*?[\*][\/]|[\"][^]*?[\"]");
+    //smatch searchResults;
+
+    int theIndex = 0;
+        for(int j=0;j<(int)allLines.length();j++) {
+            if(allLines[j]=='\n') {
+            std::string theString = "" + allLines.substr(theIndex,j-theIndex);
+            theIndex = j+1;
+            MainMemo->Lines->Add(theString.c_str());
+            ShowMessage("Hello");
+            }if(theIndex=='\0') break;
+        }
+}
+//---------------------------------------------------------------------------
+
